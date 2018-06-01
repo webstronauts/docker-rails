@@ -3,6 +3,9 @@ FROM ruby:2.5
 # Set the exposed port as environment variable.
 ENV PORT 4000
 
+# Expose our configured port.
+EXPOSE 4000
+
 # Log to stdout when running on production.
 ENV RAILS_LOG_TO_STDOUT true
 
@@ -11,21 +14,18 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends build-essential postgresql-client nodejs && \
     rm -rf /var/lib/apt/lists/*
 
-# Make sure Bundler is the latest version.
-RUN gem install bundler
+# Make sure Bundler is the latest version and foreman exists.
+RUN gem install bundler foreman
 
-# Make sure foreman exists.
-RUN gem install foreman
-
+# Create the directory where the project's files will be copied to.
 RUN mkdir /app
 WORKDIR /app
 
-COPY Gemfile* /app/
+# Copy Gemfile and Gemfile.lock from the project.
+ONBUILD COPY Gemfile* /app/
 
 # Only install gems required for production.
-RUN bundle install --frozen --without development test
+ONBUILD RUN bundle install --frozen --without development test
 
-COPY . /app
-
-# Expose our configured port.
-EXPOSE 4000
+# Copy the rest of the project's files.
+ONBUILD COPY . /app
