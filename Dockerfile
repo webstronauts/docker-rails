@@ -33,5 +33,5 @@ ONBUILD RUN bundle install --frozen --no-cache --without development test \
 # Copy the rest of the project's files.
 ONBUILD COPY . /app
 
-# Run the project under Tini, see https://github.com/krallin/tini.
+# Run the project under Tini, see https://github.com/krallin/tini
 ENTRYPOINT [ "/sbin/tini", "--" ]
