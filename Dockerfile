@@ -14,7 +14,7 @@ ENV RAILS_LOG_TO_STDOUT true
 
 # Install some required build dependencies and packages.
 RUN apk --no-cache --virtual build-dependencies add build-base \
-    && apk --no-cache add nodejs postgresql-dev
+    && apk --no-cache add nodejs postgresql-dev tini
 
 # Make sure Bundler is the latest version and foreman exists.
 RUN gem install bundler foreman
@@ -32,3 +32,6 @@ ONBUILD RUN bundle install --frozen --no-cache --without development test \
 
 # Copy the rest of the project's files.
 ONBUILD COPY . /app
+
+# Run the project under Tini, see https://github.com/krallin/tini.
+ENTRYPOINT [ "/sbin/tini", "--" ]
