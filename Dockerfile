@@ -27,7 +27,7 @@ WORKDIR /app
 ONBUILD COPY Gemfile* /app/
 
 # Only install gems required for production.
-ONBUILD RUN bundle install --frozen --no-cache --without development test \
+ONBUILD RUN bundle install -j $(nproc) --frozen --no-cache --without development test \
     && apk del build-dependencies
 
 # Copy the rest of the project's files.
