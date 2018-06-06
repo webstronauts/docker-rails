@@ -17,7 +17,9 @@ RUN apk --no-cache --virtual build-dependencies add build-base \
     && apk --no-cache add nodejs postgresql-dev tini
 
 # Make sure Bundler is the latest version and foreman exists.
-RUN gem install bundler foreman
+RUN gem install bundler foreman \
+    # And install Yarn globally through NPM (required by Webpacker).
+    && npm install --global yarn
 
 # Create the directory where the project's files will be copied to.
 RUN mkdir /app
